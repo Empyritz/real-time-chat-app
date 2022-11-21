@@ -3,6 +3,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv').config()
 const userRoutes = require('./routes/userRoutes')
+const messageRoutes = require('./routes/messageRoutes')
 
 const app = express()
 
@@ -13,6 +14,7 @@ app.use(express.json())
 
 // Middleware routes
 app.use('/api/auth', userRoutes)
+app.use('/api/messages', messageRoutes)
 
 mongoose.connect(process.env.MONGO_LOCAL_URL,  {
   useNewUrlParser: true,

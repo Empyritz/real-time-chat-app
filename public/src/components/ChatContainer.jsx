@@ -7,7 +7,7 @@ import Messages from './Messages'
 const ChatContainer = ({ currentChat }) => {
 
   const handleSendMsg = async(msg) => {
-
+    
   }
 
   return(

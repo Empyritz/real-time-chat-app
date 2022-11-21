@@ -1,20 +1,40 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import Picker from 'emoji-picker-react'
 import { IoMdSend } from 'react-icons/io'
 import { BsEmojiSmileFill } from 'react-icons/bs'
 
-const ChatInput = () => {
+const ChatInput = ({ handleSendMsg }) => {
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const msgRef = useRef()
+
+  const handleEmojiPickerHideShow = () => {
+    setShowEmojiPicker(prev => !prev)
+  }
+
+  const handleEmojiCLick = (emoji, event) => {
+    msgRef.current.value += emoji.emoji
+  }
+
+  const senMessage = e => {
+    e.preventDefault()
+    if(msgRef.current.value.length > 0) {
+      handleSendMsg(msgRef.current.value)
+      msgRef.current.value = ''
+    }
+  }
+
   return (
     <Container>
       <div className="button-container">
         <div className="emoji">
-          <BsEmojiSmileFill />
+          <BsEmojiSmileFill onClick={handleEmojiPickerHideShow} />
+          {showEmojiPicker && <Picker className='picker' width='200px' height='250px' theme='dark' onEmojiClick={handleEmojiCLick} />}
         </div>
       </div>
-      <form className='input-container'>
-        <input type="text" placeholder='type your message here'/>
-        <button className='submit'>
+      <form className='input-container' onSubmit={senMessage}>
+        <input type="text" placeholder='Message' ref={msgRef} />
+        <button className='submit' >
           <IoMdSend />
         </button>
       </form>
@@ -37,8 +57,42 @@ const Container = styled.div`
       position: relative;
       svg {
         font-size: 1.5rem;
-        color: #ffff00c8;
+        color: #f7dc1f;
         cursor: pointer;
+      }
+      .EmojiPickerReact {
+        --epr-category-navigation-button-size: 20px;
+        --epr-emoji-size: 20px;
+        position: absolute;
+        top: -290px;
+        left: -10px; 
+        box-shadow: 0 3px 13px #9a86f3;
+        border-color: #9a86f3;
+        .epr-header-overlay {
+          display: none;
+        }
+        .epr-category-nav {
+          padding: 0.4rem;
+        }
+        .epr-preview {
+          display: none;
+        }
+        .epr-body{
+          .epr-emoji-category-label{
+            height: 1.3rem;
+            font-size: 0.8rem;
+          }
+          .epr-emoji-category-content {
+            margin: 0 3px 0 8px;
+          }
+          &::-webkit-scrollbar {
+            width: 0.3rem;
+            &-thumb {
+              background-color: #ffffff39;
+              border-radius: 1rem;
+            }
+          }
+        }
       }
     }
   }
