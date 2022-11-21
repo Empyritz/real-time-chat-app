@@ -13,8 +13,6 @@ function Login() {
   const usernameRef = useRef()
   const passwordRef = useRef()
 
-
-
   const toastOptions = {
     position: 'top-left',
     autoClose: 3000,

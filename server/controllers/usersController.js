@@ -40,3 +40,35 @@ module.exports.login = async (req, res, next) => {
     next(error)
   }
 }
+
+//SET AVATAR
+module.exports.setAvatar = async (req, res, next) => {
+  try {
+    const userId = req.params.id
+    const image = req.body.image
+    await User.findByIdAndUpdate(userId, {
+      isAvatarImageSet: true,
+      avatarImage: image,
+    })
+    const userData = await User.findById(userId)
+    console.log(userData)
+    return res.json({ isSet: userData.isAvatarImageSet, image: userData.avatarImage })
+  }catch(error){
+    next(error)
+  }
+}
+
+//ALL USERS
+module.exports.getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({_id:{$ne: req.params.id}}).select([
+      'email',
+      'username',
+      'avatarImage',
+      '_id'
+    ])
+    return res.json(users)
+  }catch (error){
+
+  }
+}
