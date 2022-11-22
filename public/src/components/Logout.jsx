@@ -4,9 +4,11 @@ import styled from 'styled-components'
 // import axios from 'axios'
 import { BiPowerOff } from 'react-icons/bi'
 
-const Logout = () => {
+const Logout = ({ socket, currentUser }) => {
   const navigate = useNavigate()
   const handleClick = async () => {
+    const id = currentUser._id 
+    socket.current.emit('logout', id)
     localStorage.clear()
     navigate('/login')
   }

@@ -63,7 +63,7 @@ const Contacts = ({ contacts, currentUser, changeChat }) => {
 
 const Container = styled.div`
   display: grid;
-  grid-template-rows: 10% 75% 15%;
+  grid-template-rows: 10% 78% 12%;
   overflow: hidden;
   background-color: #080420;
   color: white;
@@ -87,6 +87,7 @@ const Container = styled.div`
     gap: 0.8rem;
     &::-webkit-scrollbar{
       width: 0.2rem;
+      height: 0.2rem;
       &-thumb {
         background-color: #ffffff39;
         width: 0.1rem;
@@ -120,9 +121,10 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     gap: 1rem;
+    font-size: 0.8rem;
     .avatar{
       img{
-        height: 4rem;
+        height: 3rem;
         max-inline-size: 100%;
       }
     }

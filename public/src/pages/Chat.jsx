@@ -1,14 +1,16 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import axios from 'axios'
-import { allUsersRoute } from '../utils/APIRoutes'
+import { allUsersRoute, host } from '../utils/APIRoutes'
 import Contacts from '../components/Contacts'
 import Welcome from '../components/Welcome'
 import ChatContainer from '../components/ChatContainer'
+import { io } from 'socket.io-client'
 
 function Chat() {
+  const socket = useRef()
   const navigate = useNavigate()
   const [contacts, setContacts] = useState([])
   const [currentUser, setCurrentUser] = useState(undefined)
@@ -23,7 +25,14 @@ function Chat() {
     getUser()
   }, [])
 
-  
+  useEffect(() => {
+    if(currentUser){
+      socket.current = io(host)
+      socket.current.emit('add-user', currentUser._id)
+      console.log('add-user')
+      console.log(socket.current)
+    }
+  }, [currentUser])
 
   useEffect(() => {
     const fetchContacts = async() => {
@@ -48,7 +57,13 @@ function Chat() {
           contacts={contacts} 
           currentUser={currentUser} 
           changeChat={handleChatChange}/>
-          {currentChat ? <ChatContainer currentChat={currentChat} /> :<Welcome currentUser={currentUser}/>}
+          {currentChat ? 
+            <ChatContainer 
+              currentChat={currentChat} 
+              currentUser={currentUser} 
+              socket={socket}
+            /> :
+            <Welcome currentUser={currentUser}/>}
       </div>
     </Container>
   )
@@ -68,9 +83,9 @@ const Container = styled.div`
     width: 80vw;
     background-color: #00000076;
     display: grid; 
-    grid-template-columns: 25% 75%;
+    grid-template-columns: 20% 80%;
     @media screen and (min-width: 720px) and (max-width: 1080px){
-      grid-template-columns: 35% 65%;
+      grid-template-columns: 25% 75%;
     }
   }
 `

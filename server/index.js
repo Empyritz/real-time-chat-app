@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv').config()
 const userRoutes = require('./routes/userRoutes')
 const messageRoutes = require('./routes/messageRoutes')
+const socket = require('socket.io')
 
 const app = express()
 
@@ -29,6 +30,37 @@ mongoose.connect(process.env.MONGO_LOCAL_URL,  {
 
 const server = app.listen(process.env.PORT, () =>{
   console.log('Server listen on http://localhost:5000')
+})
+
+const io = socket(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }
+})
+
+global.onlineUsers = new Map()
+
+io.on('connection', (socket) =>{
+  global.chatSocket = socket
+  socket.on('add-user', (userId) => {
+    onlineUsers.set(userId, socket.id)
+    console.log(onlineUsers)
+  })
+
+  socket.on('send-msg', (data) => {
+    console.log(onlineUsers)
+    const sendUserSocket = onlineUsers.get(data.to)
+    console.log(sendUserSocket)
+    if(sendUserSocket){
+      socket.to(sendUserSocket).emit('msg-receive', data.message) 
+    } 
+  })
+
+  socket.on('logout', (userId) => {
+    console.log('logout')
+    onlineUsers.delete(userId)
+  })
 })
 
 
